@@ -16,6 +16,12 @@ class ToneEngine:
     def __init__(self):
         self.feature_extractor = FeatureExtractor()
 
+    def _get_scalar(self, value):
+        """Extract scalar value from potentially Series object"""
+        if isinstance(value, pd.Series):
+            return value.iloc[0] if len(value) > 0 else 0
+        return value
+
     def analyze(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Analyze conversation and add tone estimates
@@ -66,8 +72,8 @@ class ToneEngine:
         Based on lexical balance, negation, intensity, and punctuation
         """
         # Base sentiment from lexical balance
-        positive = row['positive_lexical']
-        negative = row['negative_lexical']
+        positive = self._get_scalar(row['positive_lexical'])
+        negative = self._get_scalar(row['negative_lexical'])
 
         if positive + negative == 0:
             base_score = 0.0
@@ -76,17 +82,17 @@ class ToneEngine:
 
         # Apply negation penalty
         negation_factor = 1.0
-        if row['negation_markers'] > 0:
+        if self._get_scalar(row['negation_markers']) > 0:
             negation_factor = -0.6
 
         # Apply intensifier
-        intensifier_factor = 1.0 + (row['intensifiers'] * 0.2)
+        intensifier_factor = 1.0 + (self._get_scalar(row['intensifiers']) * 0.2)
 
         # Punctuation influence
         punctuation_factor = 1.0
-        if row['exclamation_count'] > 0:
+        if self._get_scalar(row['exclamation_count']) > 0:
             punctuation_factor = 1.1
-        if row['question_count'] > 0:
+        if self._get_scalar(row['question_count']) > 0:
             punctuation_factor = 0.9
 
         # Combine
@@ -113,21 +119,21 @@ class ToneEngine:
             return 0.0
 
         # Base from lexical cues
-        base = row[lexical_col]
+        base = self._get_scalar(row[lexical_col])
 
         # Normalize by message length (longer messages with same cue count = less intense)
-        word_count = max(1, row['word_count'])
+        word_count = max(1, self._get_scalar(row['word_count']))
         normalized = base / word_count
 
         # Scale to 0-1 range
         intensity = min(1.0, normalized * 5.0)
 
         # Boost from punctuation
-        if row['exclamation_count'] > 0:
+        if self._get_scalar(row['exclamation_count']) > 0:
             intensity = min(1.0, intensity * 1.3)
 
         # Boost from uppercase
-        if row['uppercase_ratio'] > 0.3:
+        if self._get_scalar(row['uppercase_ratio']) > 0.3:
             intensity = min(1.0, intensity * 1.2)
 
         return intensity
@@ -138,20 +144,20 @@ class ToneEngine:
         Based on positive words in negative context, cues, and patterns
         """
         # Direct sarcasm cues
-        cue_score = min(1.0, row['sarcasm_cues'] * 0.4)
+        cue_score = min(1.0, self._get_scalar(row['sarcasm_cues']) * 0.4)
 
         # Pattern: positive words + negative sentiment + disagreement
         sentiment_score = row.get('sentiment_score', 0)
         positive_in_negative = 0.0
-        if row['positive_lexical'] > 0 and sentiment_score < -0.1:
+        if self._get_scalar(row['positive_lexical']) > 0 and sentiment_score < -0.1:
             positive_in_negative = 0.5
 
         # Pattern: dismissive agreement
-        dismissive_score = min(1.0, row['dismissive_markers'] * 0.3)
+        dismissive_score = min(1.0, self._get_scalar(row['dismissive_markers']) * 0.3)
 
         # Pattern: rhetorical questions
         rhetorical_score = 0.0
-        if row['question_count'] > 0 and row['disagreement_markers'] > 0:
+        if self._get_scalar(row['question_count']) > 0 and self._get_scalar(row['disagreement_markers']) > 0:
             rhetorical_score = 0.4
 
         # Combine
@@ -165,17 +171,17 @@ class ToneEngine:
         Based on semantic contrast and contradiction patterns
         """
         # Direct irony cues
-        cue_score = min(1.0, row['irony_cues'] * 0.5)
+        cue_score = min(1.0, self._get_scalar(row['irony_cues']) * 0.5)
 
         # Pattern: positive-negative mismatch
         sentiment_score = row.get('sentiment_score', 0)
         mismatch_score = 0.0
-        if row['positive_lexical'] > 0 and row['negative_lexical'] > 0:
+        if self._get_scalar(row['positive_lexical']) > 0 and self._get_scalar(row['negative_lexical']) > 0:
             mismatch_score = 0.3
 
         # Pattern: contradictory framing
         contradiction_score = 0.0
-        if row['disagreement_markers'] > 0 and row['positive_lexical'] > 0:
+        if self._get_scalar(row['disagreement_markers']) > 0 and self._get_scalar(row['positive_lexical']) > 0:
             contradiction_score = 0.4
 
         # Combine
@@ -189,17 +195,17 @@ class ToneEngine:
         Based on dismissive agreement, indirect blame, and contextual patterns
         """
         # Direct passive-aggressive cues
-        cue_score = min(1.0, row['passive_aggressive_cues'] * 0.4)
+        cue_score = min(1.0, self._get_scalar(row['passive_aggressive_cues']) * 0.4)
 
         # Dismissive agreement pattern
-        dismissive_score = min(1.0, row['dismissive_markers'] * 0.3)
+        dismissive_score = min(1.0, self._get_scalar(row['dismissive_markers']) * 0.3)
 
         # Indirect blame pattern
-        blame_score = min(1.0, row['blame_indicators'] * 0.3)
+        blame_score = min(1.0, self._get_scalar(row['blame_indicators']) * 0.3)
 
         # Pattern: politeness + negative context
         politeness_negative = 0.0
-        if row['positive_lexical'] > 0 and row.get('sentiment_score', 0) < -0.2:
+        if self._get_scalar(row['positive_lexical']) > 0 and row.get('sentiment_score', 0) < -0.2:
             politeness_negative = 0.4
 
         # Combine
@@ -213,17 +219,17 @@ class ToneEngine:
         Based on aggressive vocabulary, direct blame, and antagonistic patterns
         """
         # Direct hostility cues
-        cue_score = min(1.0, row['hostility_cues'] * 0.4)
+        cue_score = min(1.0, self._get_scalar(row['hostility_cues']) * 0.4)
 
         # Blame indicators
-        blame_score = min(1.0, row['blame_indicators'] * 0.3)
+        blame_score = min(1.0, self._get_scalar(row['blame_indicators']) * 0.3)
 
         # Anger lexical
-        anger_score = min(1.0, row['anger_lexical'] * 0.2)
+        anger_score = min(1.0, self._get_scalar(row['anger_lexical']) * 0.2)
 
         # Aggressive punctuation (excessive exclamation, caps)
         aggression_punctuation = 0.0
-        if row['exclamation_count'] >= 2 or row['uppercase_ratio'] > 0.5:
+        if self._get_scalar(row['exclamation_count']) >= 2 or self._get_scalar(row['uppercase_ratio']) > 0.5:
             aggression_punctuation = 0.3
 
         # Combine

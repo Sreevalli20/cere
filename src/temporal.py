@@ -19,7 +19,19 @@ class TemporalAnalyzer:
         Perform temporal analysis on conversation
         Returns DataFrame with temporal columns added
         """
+        # Initialize columns for single-message case
         if len(df) < 2:
+            df['escalation'] = 0.0
+            df['escalation_rolling'] = 0.0
+            df['is_turning_point'] = False
+            tone_columns = [
+                'sentiment_score', 'joy', 'sadness', 'anger', 'fear', 'frustration',
+                'sarcasm', 'irony', 'passive_aggression', 'hostility'
+            ]
+            for col in tone_columns:
+                if col in df.columns:
+                    df[f'{col}_delta'] = 0.0
+                    df[f'{col}_rolling'] = df[col]
             return df
 
         # Calculate deltas (change from previous message)

@@ -127,7 +127,7 @@ def test_max_messages_limit():
     """Test that max messages limit is enforced"""
     parser = ConversationParser(max_messages=5)
 
-    csv_content = "\n".join([f"speaker{i},text{i},2026-09-30 10:0{i}:00" for i in range(10)])
+    csv_content = "speaker,text,timestamp\n" + "\n".join([f"speaker{i},text{i},2026-09-30 10:0{i}:00" for i in range(10)])
 
     with pytest.raises(ValueError, match="exceeds maximum"):
         parser._parse_csv(csv_content)
