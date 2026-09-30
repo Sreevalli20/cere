@@ -22,7 +22,7 @@ def test_temporal_analysis():
     df = pd.DataFrame({
         'conversation_id': ['test'] * 3,
         'message_id': [0, 1, 2],
-        'timestamp': pd.date_range('2026-09-30', periods=3, freq='H'),
+        'timestamp': pd.date_range('2026-09-30', periods=3, freq='h'),
         'speaker': ['Alice', 'Bob', 'Alice'],
         'text': ['Hello', 'Hi', 'Bye'],
         'turn_index': [0, 1, 2],
@@ -141,7 +141,7 @@ def test_conversation_summary():
     df = pd.DataFrame({
         'conversation_id': ['test'] * 3,
         'message_id': [0, 1, 2],
-        'timestamp': pd.date_range('2026-09-30', periods=3, freq='H'),
+        'timestamp': pd.date_range('2026-09-30', periods=3, freq='h'),
         'speaker': ['Alice', 'Bob', 'Alice'],
         'text': ['Hello', 'Hi', 'Bye'],
         'turn_index': [0, 1, 2],
@@ -175,7 +175,7 @@ def test_speaker_analysis():
     df = pd.DataFrame({
         'conversation_id': ['test'] * 4,
         'message_id': [0, 1, 2, 3],
-        'timestamp': pd.date_range('2026-09-30', periods=4, freq='H'),
+        'timestamp': pd.date_range('2026-09-30', periods=4, freq='h'),
         'speaker': ['Alice', 'Bob', 'Alice', 'Bob'],
         'text': ['Hello', 'Hi', 'Bye', 'Ok'],
         'turn_index': [0, 1, 2, 3],
@@ -209,7 +209,7 @@ def test_escalation_timeline():
     df = pd.DataFrame({
         'conversation_id': ['test'] * 3,
         'message_id': [0, 1, 2],
-        'timestamp': pd.date_range('2026-09-30', periods=3, freq='H'),
+        'timestamp': pd.date_range('2026-09-30', periods=3, freq='h'),
         'speaker': ['Alice', 'Bob', 'Alice'],
         'text': ['Hello', 'Hi', 'Bye'],
         'turn_index': [0, 1, 2],
@@ -243,7 +243,7 @@ def test_single_message_conversation():
     df = pd.DataFrame({
         'conversation_id': ['test'],
         'message_id': [0],
-        'timestamp': pd.date_range('2026-09-30', periods=1, freq='H'),
+        'timestamp': pd.date_range('2026-09-30', periods=1, freq='h'),
         'speaker': ['Alice'],
         'text': ['Hello'],
         'turn_index': [0],
