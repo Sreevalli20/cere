@@ -7,7 +7,6 @@ font = "sans serif"
 
 [client]
 showErrorDetails = false
-maxUploadSize = 5
 
 [server]
 maxUploadSize = 5
