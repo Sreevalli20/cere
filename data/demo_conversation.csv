@@ -1,0 +1,19 @@
+conversation_id,message_id,timestamp,speaker,text,turn_index
+demo,0,2026-09-30 10:00:00,Alice,Hey! I wanted to discuss the project timeline. Do you have a moment?,0
+demo,1,2026-09-30 10:01:00,Bob,"Sure, I have some time. What's on your mind?",1
+demo,2,2026-09-30 10:02:00,Alice,I think we need to adjust the deadline. The current timeline seems too tight given the scope.,2
+demo,3,2026-09-30 10:03:00,Bob,I disagree. We've already committed to this timeline with the client.,3
+demo,4,2026-09-30 10:04:00,Alice,But the requirements changed since then. We can't realistically deliver everything by then.,4
+demo,5,2026-09-30 10:05:00,Bob,That's not my problem. You should have raised this earlier.,5
+demo,6,2026-09-30 10:06:00,Alice,"I did raise it, but nobody listened. This is frustrating.",6
+demo,7,2026-09-30 10:07:00,Bob,"Yeah, sure. Apparently nobody reads what I say either.",7
+demo,8,2026-09-30 10:08:00,Alice,Of course. Great communication we have here.,8
+demo,9,2026-09-30 10:09:00,Bob,Fine. Whatever you want. Do whatever you think is best.,9
+demo,10,2026-09-30 10:10:00,Alice,If you say so. I'll just work with what we have.,10
+demo,11,2026-09-30 10:11:00,Bob,No problem. Thanks for nothing.,11
+demo,12,2026-09-30 10:12:00,Alice,This is ridiculous. We need to have a proper conversation about this.,12
+demo,13,2026-09-30 10:13:00,Bob,You're the one making it difficult!,13
+demo,14,2026-09-30 10:14:00,Alice,"Wait, let's take a step back. I don't want this to turn into an argument.",14
+demo,15,2026-09-30 10:15:00,Bob,You're right. I apologize for getting heated. Let's discuss this constructively.,15
+demo,16,2026-09-30 10:16:00,Alice,Thank you. I appreciate that. Let's figure out a realistic solution together.,16
+demo,17,2026-09-30 10:17:00,Bob,Agreed. Let me review the requirements again and we can discuss options.,17
